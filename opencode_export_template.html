@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{title}} - OpenCode</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root {
+    --text-primary: #37352f;
+    --text-secondary: #9b9a97;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f7f6f3;
+    --bg-code: #f7f6f3;
+    --border: #e9e9e7;
+    --accent: #2eaadc;
+}
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    font-size: 15px;
+}
+.container { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem; }
+.session-header { margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+.session-title { font-size: 2rem; font-weight: 700; margin: 0 0 0.5rem; }
+.session-meta { color: var(--text-secondary); font-size: 0.8rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+.badge-archived { background: #fdebec; color: #e03e3e; font-size: 0.7rem; padding: 2px 8px; border-radius: 3px; font-weight: 500; }
+.session-stats { background: var(--bg-secondary); padding: 2px 8px; border-radius: 3px; font-size: 0.75rem; }
+.back-link { color: var(--text-secondary); font-size: 0.85rem; text-decoration: none; display: inline-block; margin-bottom: 1.5rem; }
+.back-link:hover { color: var(--text-primary); }
+
+/* Messages */
+.message { margin-bottom: 1.5rem; padding: 1rem 0; }
+.message + .message { border-top: 1px solid var(--border); }
+.msg-header { margin-bottom: 0.5rem; }
+.msg-role { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+.msg-user .msg-role { color: var(--text-primary); }
+.msg-assistant .msg-role { color: var(--accent); }
+.msg-body { }
+
+/* Parts */
+.part-text { margin: 0.5rem 0; }
+.msg-p { margin: 0.4em 0; }
+.msg-h2 { font-size: 1.4rem; font-weight: 600; margin: 1rem 0 0.5rem; }
+.msg-h3 { font-size: 1.2rem; font-weight: 600; margin: 0.8rem 0 0.4rem; }
+.msg-h4 { font-size: 1rem; font-weight: 600; margin: 0.6rem 0 0.3rem; }
+
+.code-block {
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.8rem 1rem;
+    overflow-x: auto;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    margin: 0.6rem 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+.inline-code {
+    background: var(--bg-code);
+    padding: 0.15em 0.4em;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+
+/* Tool calls */
+.part-tool { margin: 0.5rem 0; border: 1px solid var(--border); border-radius: 4px; }
+.tool-summary {
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    list-style: none;
+}
+.tool-summary::-webkit-details-marker { display: none; }
+.tool-icon { font-size: 0.9rem; }
+.tool-name { font-weight: 600; color: var(--text-primary); }
+.tool-title { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tool-status { font-size: 0.7rem; padding: 1px 6px; border-radius: 3px; background: #dbeddb; color: #2d6a2d; }
+.tool-pending .tool-status { background: #fdecc8; color: #9a6700; }
+.tool-details { padding: 0.5rem 0.75rem; border-top: 1px solid var(--border); font-size: 0.8rem; }
+.tool-param { display: block; color: var(--text-secondary); margin: 0.2rem 0; word-break: break-all; }
+.tool-output { background: var(--bg-code); padding: 0.5rem; border-radius: 3px; font-size: 0.75rem; margin-top: 0.4rem; white-space: pre-wrap; word-break: break-word; max-height: 200px; overflow-y: auto; }
+
+/* Other parts */
+.part-reasoning { margin: 0.5rem 0; border: 1px solid var(--border); border-radius: 4px; font-size: 0.85rem; }
+.part-reasoning summary { padding: 0.4rem 0.75rem; cursor: pointer; color: var(--text-secondary); font-size: 0.8rem; }
+.part-reasoning > div { padding: 0.5rem 0.75rem; border-top: 1px solid var(--border); }
+.part-compaction { margin: 0.5rem 0; text-align: center; color: var(--text-secondary); font-size: 0.75rem; font-style: italic; }
+.part-patch, .part-file { margin: 0.3rem 0; font-size: 0.8rem; color: var(--text-secondary); }
+.part-step-start { margin: 0.3rem 0; }
+</style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back-link">← Back to project</a>
+    <div class="session-header">
+        <h1 class="session-title">{{title}}</h1>
+        <div class="session-meta">
+            <span>{{created}}</span>
+            <span>→</span>
+            <span>{{updated}}</span>
+            {{archived_badge}}
+            {{stats}}
+        </div>
+    </div>
+    <div class="messages">
+        {{messages}}
+    </div>
+</div>
+</body>
+</html>
